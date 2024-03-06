@@ -1,0 +1,188 @@
+﻿<Page
+    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    ScrollViewer.CanContentScroll="False"
+    Title="Что"
+    d:DataContext="{d:DesignInstance local:TeacherPage,
+                                     IsDesignTimeCreatable=False}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d"
+    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    x:Class="Gleb.Views.Pages.TeacherPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="clr-namespace:Gleb.Helpers"
+    xmlns:local="clr-namespace:Gleb.Views.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Page.Resources>
+        <helpers:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+        <helpers:BlobToImageConverter x:Key="BlobToImageConverter" />
+        <helpers:BooleanToVisibilityHelper x:Key="BooleanToVisibilityHelper" />
+        <sys:Boolean x:Key="BoolTrue">True</sys:Boolean>
+        <sys:Boolean x:Key="BoolFalse">False</sys:Boolean>
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <!--  Фото  -->
+        <ui:Button
+            Grid.Column="0"
+            Grid.Row="1"
+            Grid.RowSpan="3"
+            Height="111"
+            HorizontalAlignment="Center"
+            IsEnabled="{Binding ViewModel.IsEdit}"
+            Padding="0"
+            VerticalAlignment="Top"
+            Width="111">
+            <ui:Button.Content>
+                <Grid>
+                    <Border
+                        BorderThickness="0"
+                        CornerRadius="{Binding RelativeSource={RelativeSource AncestorType=ui:Button}, Path=CornerRadius}"
+                        Height="{Binding RelativeSource={RelativeSource AncestorType=ui:Button}, Path=Height}"
+                        Width="{Binding RelativeSource={RelativeSource AncestorType=ui:Button}, Path=Width}">
+                        <Border.Background>
+                            <ImageBrush ImageSource="{Binding ViewModel.Photo, Converter={StaticResource BlobToImageConverter}}" Stretch="UniformToFill" />
+                        </Border.Background>
+                    </Border>
+                    <ui:SymbolIcon Symbol="Add24" Visibility="{Binding ViewModel.IsEdit, Converter={StaticResource BooleanToVisibilityHelper}}" />
+                </Grid>
+            </ui:Button.Content>
+        </ui:Button>
+
+        <ui:TextBox
+            Grid.Column="1"
+            Grid.Row="1"
+            IsEnabled="{Binding ViewModel.IsEdit}"
+            Margin="4,0,0,4"
+            Name="LastNameBox"
+            PlaceholderText="Иванов"
+            Text="{Binding ViewModel.LastName}" />
+        <ui:TextBox
+            Grid.Column="1"
+            Grid.Row="2"
+            IsEnabled="{Binding ViewModel.IsEdit}"
+            Margin="4,0,0,4"
+            Name="FirstNameBox"
+            PlaceholderText="Иван"
+            Text="{Binding ViewModel.FirstName}" />
+        <ui:TextBox
+            Grid.Column="1"
+            Grid.Row="3"
+            IsEnabled="{Binding ViewModel.IsEdit}"
+            Margin="4,0,0,4"
+            Name="SurnameBox"
+            PlaceholderText="Иванович"
+            Text="{Binding ViewModel.Surname}" />
+
+
+        <StackPanel
+            Grid.Column="1"
+            Grid.Row="4"
+            Margin="4,0,0,4"
+            Orientation="Vertical">
+            <ui:TextBlock
+                FontTypography="Body"
+                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                Margin="4,0,4,4"
+                Text="День рождение"
+                VerticalAlignment="Center" />
+            <DatePicker
+                IsEnabled="{Binding ViewModel.IsEdit}"
+                Name="BirthCalendarPicker"
+                SelectedDate="{Binding ViewModel.BirthDay}" />
+            <TextBlock Text="{Binding ViewModel.BirthDay}" />
+        </StackPanel>
+
+        <StackPanel
+            Grid.Column="1"
+            Grid.Row="5"
+            Margin="4,0,0,4">
+            <ui:TextBlock
+                FontTypography="Body"
+                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                Margin="4,0,4,4"
+                Text="Паспорт"
+                VerticalAlignment="Center" />
+            <StackPanel Orientation="Horizontal">
+                <ui:NumberBox
+                    IsEnabled="{Binding ViewModel.IsEdit}"
+                    Margin="0,0,8,0"
+                    MaxDecimalPlaces="0"
+                    PlaceholderText="Серия"
+                    SpinButtonPlacementMode="Hidden"
+                    Text="{Binding ViewModel.PassportSerial}" />
+                <ui:NumberBox
+                    IsEnabled="{Binding ViewModel.IsEdit}"
+                    MaxDecimalPlaces="0"
+                    PlaceholderText="Номер"
+                    SpinButtonPlacementMode="Hidden"
+                    Text="{Binding ViewModel.PassportNumber}"
+                    Width="100" />
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel
+            FlowDirection="RightToLeft"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Grid.Row="0"
+            Margin="0,0,0,8"
+            Orientation="Horizontal">
+            <ToggleButton
+                Content="Изменить"
+                IsChecked="{Binding ViewModel.IsEdit}"
+                Margin="0,0,4,0"
+                Visibility="{Binding ViewModel.IsEdit, Converter={StaticResource BooleanToVisibilityHelper}, ConverterParameter={StaticResource BoolTrue}}" />
+            <ui:Button
+                Appearance="Danger"
+                Command="{Binding ViewModel.DeleteCommand}"
+                Content="Удалить"
+                IsEnabled="{Binding ViewModel.IsEdit}"
+                Margin="0,0,4,0"
+                Visibility="{Binding ViewModel.IsEdit, Converter={StaticResource BooleanToVisibilityHelper}}">
+                <ui:Button.Icon>
+                    <ui:SymbolIcon Symbol="Delete24" />
+                </ui:Button.Icon>
+            </ui:Button>
+            <ui:Button
+                Command="{Binding ViewModel.BackCommand}"
+                Content="Отмена"
+                IsEnabled="{Binding ViewModel.IsEdit}"
+                Margin="0,0,4,0"
+                Visibility="{Binding ViewModel.IsEdit, Converter={StaticResource BooleanToVisibilityHelper}}">
+                <ui:Button.Icon>
+                    <ui:SymbolIcon Symbol="Dismiss24" />
+                </ui:Button.Icon>
+            </ui:Button>
+            <ui:Button
+                Appearance="Primary"
+                Command="{Binding ViewModel.SubmitCommand}"
+                Content="Сохранить"
+                IsEnabled="{Binding ViewModel.IsEdit}"
+                Margin="0,0,4,0"
+                Visibility="{Binding ViewModel.IsEdit, Converter={StaticResource BooleanToVisibilityHelper}}">
+                <ui:Button.Icon>
+                    <ui:SymbolIcon Symbol="Save24" />
+                </ui:Button.Icon>
+            </ui:Button>
+        </StackPanel>
+    </Grid>
+</Page>
