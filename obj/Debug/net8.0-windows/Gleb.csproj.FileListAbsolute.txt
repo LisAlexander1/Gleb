@@ -168,3 +168,10 @@ S:\Code\C#\WindowMaker\Gleb\obj\Debug\net8.0-windows\Views\Pages\ClassesListPage
 S:\Code\C#\WindowMaker\Gleb\obj\Debug\net8.0-windows\Views\Pages\ClassesListPage.baml
 S:\Code\C#\WindowMaker\Gleb\obj\Debug\net8.0-windows\Views\Pages\TeacherPage.g.cs
 S:\Code\C#\WindowMaker\Gleb\obj\Debug\net8.0-windows\Views\Pages\TeacherPage.baml
+S:\Code\C#\WindowMaker\Gleb\obj\Debug\net8.0-windows\Gleb.sourcelink.json
+S:\Code\C#\WindowMaker\Gleb\obj\Debug\net8.0-windows\Views\UserControls\ListPage.g.cs
+S:\Code\C#\WindowMaker\Gleb\obj\Debug\net8.0-windows\Views\UserControls\ListPage.baml
+S:\Code\C#\WindowMaker\Gleb\obj\Debug\net8.0-windows\Views\Pages\ClassPage.g.cs
+S:\Code\C#\WindowMaker\Gleb\obj\Debug\net8.0-windows\Views\UserControls\EditPageButtons.g.cs
+S:\Code\C#\WindowMaker\Gleb\obj\Debug\net8.0-windows\Views\Pages\ClassPage.baml
+S:\Code\C#\WindowMaker\Gleb\obj\Debug\net8.0-windows\Views\UserControls\EditPageButtons.baml

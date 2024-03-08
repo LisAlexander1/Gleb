@@ -52,18 +52,29 @@ namespace Gleb.ViewModels.Windows
             new MenuItem { Header = "Home", Tag = "tray_home" }
         };
 
-        public MainWindowViewModel(TeacherViewModel teacherViewModel)
+        public MainWindowViewModel(TeacherViewModel teacherViewModel, ClassViewModel classViewModel)
         {
-            var lastNameBinding = new Binding("LastName") { Source = teacherViewModel };
+            var lastNameBinding = new Binding("LastName") { Source = teacherViewModel, Mode = BindingMode.OneWay};
 
-            var menuItem = new NavigationViewItem()
+            var teacherMenuItem = new NavigationViewItem()
             {
                 Icon = new SymbolIcon { Symbol = SymbolRegular.PeopleAdd24 },
                 TargetPageType = typeof(Views.Pages.TeacherPage),
                 Visibility = Visibility.Collapsed
             };
-            menuItem.SetBinding(ContentControl.ContentProperty, lastNameBinding);
-            this.MenuItems.Add(menuItem);
+            teacherMenuItem.SetBinding(ContentControl.ContentProperty, lastNameBinding);
+            this.MenuItems.Add(teacherMenuItem);
+            
+            var classNameBinding = new Binding("Name") { Source = classViewModel, Mode = BindingMode.OneWay};
+
+            var classMenuItem = new NavigationViewItem()
+            {
+                Icon = new SymbolIcon { Symbol = SymbolRegular.PeopleCommunity24 },
+                TargetPageType = typeof(Views.Pages.ClassPage),
+                Visibility = Visibility.Collapsed
+            };
+            classMenuItem.SetBinding(ContentControl.ContentProperty, classNameBinding);
+            this.MenuItems.Add(classMenuItem);
         }
     }
 }

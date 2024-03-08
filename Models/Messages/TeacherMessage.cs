@@ -7,9 +7,9 @@ public class TeacherMessage : ValueChangedMessage<Teacher>
     public bool IsEdit { get; }
     public Teacher Teacher { get; }
     
-    public TeacherMessage(Teacher value, bool isEdit) : base(value)
+    public TeacherMessage(Teacher value, bool? isEdit) : base(value)
     {
-        IsEdit = isEdit;
+        IsEdit = (bool)isEdit!;
         Teacher = value;
 
     }

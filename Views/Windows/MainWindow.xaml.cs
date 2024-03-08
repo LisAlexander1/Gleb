@@ -17,7 +17,8 @@ namespace Gleb.Views.Windows
         public MainWindow(
             MainWindowViewModel viewModel,
             IPageService pageService,
-            INavigationService navigationService
+            INavigationService navigationService,
+            IContentDialogService contentDialogService
         )
         {
             ViewModel = viewModel;
@@ -27,7 +28,8 @@ namespace Gleb.Views.Windows
 
             InitializeComponent();
             SetPageService(pageService);
-
+            
+            contentDialogService.SetContentPresenter(RootContentDialog);
             navigationService.SetNavigationControl(RootNavigation);
         }
 

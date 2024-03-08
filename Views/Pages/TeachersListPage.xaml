@@ -17,79 +17,52 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:Gleb.Models"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:userControls="clr-namespace:Gleb.Views.UserControls"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Page.Resources>
         <helpers:BlobToImageConverter x:Key="BlobToImageConverter" />
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Page.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <ui:Button
-                Appearance="Primary"
-                Command="{Binding ViewModel.CreateCommand}"
-                Content="Добавить"
-                Margin="0,0,8,0">
-                <ui:Button.Icon>
-                    <ui:SymbolIcon Symbol="Add24" />
-                </ui:Button.Icon>
-            </ui:Button>
-            <ui:Button
-                Command="{Binding ViewModel.LoadDataCommand, Mode=OneWay}"
-                Content="Обновить"
-                Margin="0,0,8,0">
-                <ui:Button.Icon>
-                    <ui:SymbolIcon Symbol="ArrowSync24" />
-                </ui:Button.Icon>
-            </ui:Button>
-            <ui:ProgressRing
-                Height="36"
-                IsEnabled="{Binding ViewModel.IsLoading}"
-                IsIndeterminate="{Binding ViewModel.IsLoading}"
-                Visibility="{Binding ViewModel.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
-                Width="36" />
-        </StackPanel>
-        <ListView Grid.Row="1" ItemsSource="{Binding ViewModel.Teachers}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type models:Teacher}">
-                    <ui:CardAction
-                        Command="{Binding ViewModel.EditCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                        CommandParameter="{Binding}"
-                        Padding="0,0,8,0">
-                        <StackPanel Orientation="Horizontal">
-                            <Border
-                                CornerRadius="4,0,0,4"
-                                Height="60"
-                                Margin="0,0,8,0"
-                                Width="60">
-                                <Border.Background>
-                                    <ImageBrush ImageSource="{Binding Photo, Converter={StaticResource BlobToImageConverter}}" Stretch="UniformToFill" />
-                                </Border.Background>
-                            </Border>
-                            <StackPanel Margin="0,4,0,4">
-                                <TextBlock
-                                    FontSize="20"
-                                    Margin="0,0,0,4"
-                                    Text="{Binding LastName}"
-                                    VerticalAlignment="Stretch" />
+    <userControls:ListPage
+        AddCommand="{Binding ViewModel.CreateCommand}"
+        IsLoading="{Binding ViewModel.IsLoading}"
+        Items="{Binding ViewModel.Teachers}"
+        RefreshCommand="{Binding ViewModel.LoadDataCommand}">
+        <userControls:ListPage.DataTemplate>
+            <DataTemplate DataType="{x:Type models:Teacher}">
+                <ui:CardAction
+                    Command="{Binding ViewModel.OpenCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                    CommandParameter="{Binding}"
+                    Padding="0,0,8,0">
+                    <StackPanel Orientation="Horizontal">
+                        <Border
+                            CornerRadius="4,0,0,4"
+                            Height="60"
+                            Margin="0,0,8,0"
+                            Width="60">
+                            <Border.Background>
+                                <ImageBrush ImageSource="{Binding Photo, Converter={StaticResource BlobToImageConverter}}" Stretch="UniformToFill" />
+                            </Border.Background>
+                        </Border>
+                        <StackPanel Margin="0,4,0,4">
+                            <TextBlock
+                                FontSize="20"
+                                Margin="0,0,0,4"
+                                Text="{Binding LastName}"
+                                VerticalAlignment="Stretch" />
 
-                                <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}">
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}{0} {1}">
-                                            <Binding Path="FirstName" />
-                                            <Binding Path="Surname" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
+                            <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} {1}">
+                                        <Binding Path="FirstName" />
+                                        <Binding Path="Surname" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
 
-                            </StackPanel>
                         </StackPanel>
-                    </ui:CardAction>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ListView>
-    </Grid>
+                    </StackPanel>
+                </ui:CardAction>
+            </DataTemplate>
+        </userControls:ListPage.DataTemplate>
+    </userControls:ListPage>
 </Page>

@@ -17,13 +17,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=System.Runtime"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:userControls="clr-namespace:Gleb.Views.UserControls"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Page.Resources>
         <helpers:InverseBooleanConverter x:Key="InverseBooleanConverter" />
         <helpers:BlobToImageConverter x:Key="BlobToImageConverter" />
         <helpers:BooleanToVisibilityHelper x:Key="BooleanToVisibilityHelper" />
-        <sys:Boolean x:Key="BoolTrue">True</sys:Boolean>
-        <sys:Boolean x:Key="BoolFalse">False</sys:Boolean>
+
     </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -42,6 +42,7 @@
         </Grid.ColumnDefinitions>
         <!--  Фото  -->
         <ui:Button
+            Command="{Binding ViewModel.OpenPictureCommand}"
             Grid.Column="0"
             Grid.Row="1"
             Grid.RowSpan="3"
@@ -139,50 +140,13 @@
             </StackPanel>
         </StackPanel>
 
-        <StackPanel
-            FlowDirection="RightToLeft"
+        <userControls:EditPageButtons
+            CancelCommand="{Binding ViewModel.BackCommand}"
+            DeleteCommand="{Binding ViewModel.DeleteCommand}"
             Grid.Column="0"
             Grid.ColumnSpan="2"
             Grid.Row="0"
-            Margin="0,0,0,8"
-            Orientation="Horizontal">
-            <ToggleButton
-                Content="Изменить"
-                IsChecked="{Binding ViewModel.IsEdit}"
-                Margin="0,0,4,0"
-                Visibility="{Binding ViewModel.IsEdit, Converter={StaticResource BooleanToVisibilityHelper}, ConverterParameter={StaticResource BoolTrue}}" />
-            <ui:Button
-                Appearance="Danger"
-                Command="{Binding ViewModel.DeleteCommand}"
-                Content="Удалить"
-                IsEnabled="{Binding ViewModel.IsEdit}"
-                Margin="0,0,4,0"
-                Visibility="{Binding ViewModel.IsEdit, Converter={StaticResource BooleanToVisibilityHelper}}">
-                <ui:Button.Icon>
-                    <ui:SymbolIcon Symbol="Delete24" />
-                </ui:Button.Icon>
-            </ui:Button>
-            <ui:Button
-                Command="{Binding ViewModel.BackCommand}"
-                Content="Отмена"
-                IsEnabled="{Binding ViewModel.IsEdit}"
-                Margin="0,0,4,0"
-                Visibility="{Binding ViewModel.IsEdit, Converter={StaticResource BooleanToVisibilityHelper}}">
-                <ui:Button.Icon>
-                    <ui:SymbolIcon Symbol="Dismiss24" />
-                </ui:Button.Icon>
-            </ui:Button>
-            <ui:Button
-                Appearance="Primary"
-                Command="{Binding ViewModel.SubmitCommand}"
-                Content="Сохранить"
-                IsEnabled="{Binding ViewModel.IsEdit}"
-                Margin="0,0,4,0"
-                Visibility="{Binding ViewModel.IsEdit, Converter={StaticResource BooleanToVisibilityHelper}}">
-                <ui:Button.Icon>
-                    <ui:SymbolIcon Symbol="Save24" />
-                </ui:Button.Icon>
-            </ui:Button>
-        </StackPanel>
+            IsEdit="{Binding ViewModel.IsEdit, Mode=TwoWay}"
+            SaveCommand="{Binding ViewModel.SubmitCommand}" />
     </Grid>
 </Page>

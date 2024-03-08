@@ -1,0 +1,67 @@
+﻿<UserControl
+    d:DesignHeight="50"
+    d:DesignWidth="500"
+    mc:Ignorable="d"
+    x:Class="Gleb.Views.UserControls.EditPageButtons"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="clr-namespace:Gleb.Helpers"
+    xmlns:local="clr-namespace:Gleb.Views.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <helpers:BooleanToVisibilityHelper x:Key="BooleanToVisibilityHelper" />
+    </UserControl.Resources>
+    <StackPanel
+        FlowDirection="RightToLeft"
+        Margin="0,0,0,8"
+        Orientation="Horizontal">
+        <ToggleButton
+            IsChecked="{Binding IsEdit, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            Margin="0,0,4,0"
+            Visibility="{Binding IsEdit, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BooleanToVisibilityHelper}, ConverterParameter={StaticResource BoolTrue}}">
+            <ToggleButton.Content>
+                <TextBlock>
+                    <ui:SymbolIcon
+                        Margin="0,0,8,0"
+                        Symbol="Pen24"
+                        VerticalAlignment="Center" />
+                    Изменить
+                </TextBlock>
+            </ToggleButton.Content>
+        </ToggleButton>
+        <ui:Button
+            Appearance="Danger"
+            Command="{Binding DeleteCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            Content="Удалить"
+            IsEnabled="{Binding IsEdit, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            Margin="0,0,4,0"
+            Visibility="{Binding IsEdit, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BooleanToVisibilityHelper}}">
+            <ui:Button.Icon>
+                <ui:SymbolIcon Symbol="Delete24" />
+            </ui:Button.Icon>
+        </ui:Button>
+        <ui:Button
+            Command="{Binding CancelCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            Content="Отмена"
+            IsEnabled="{Binding IsEdit, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            Margin="0,0,4,0"
+            Visibility="{Binding IsEdit, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BooleanToVisibilityHelper}}">
+            <ui:Button.Icon>
+                <ui:SymbolIcon Symbol="Dismiss24" />
+            </ui:Button.Icon>
+        </ui:Button>
+        <ui:Button
+            Appearance="Primary"
+            Command="{Binding SaveCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            Content="Сохранить"
+            IsEnabled="{Binding IsEdit, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            Margin="0,0,4,0"
+            Visibility="{Binding IsEdit, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BooleanToVisibilityHelper}}">
+            <ui:Button.Icon>
+                <ui:SymbolIcon Symbol="Save24" />
+            </ui:Button.Icon>
+        </ui:Button>
+    </StackPanel>
+</UserControl>

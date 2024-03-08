@@ -51,6 +51,8 @@ namespace Gleb
                 // TaskBar manipulation
                 services.AddSingleton<ITaskBarService, TaskBarService>();
 
+                services.AddSingleton<IContentDialogService, ContentDialogService>();
+
                 // Service containing navigation, same as INavigationWindow... but without window
                 services.AddSingleton<INavigationService, NavigationService>();
 
@@ -72,6 +74,9 @@ namespace Gleb
                 
                 services.AddSingleton<ClassesListPage>();
                 services.AddSingleton<ClassesListViewModel>();
+                
+                services.AddSingleton<ClassPage>();
+                services.AddSingleton<ClassViewModel>();
                 
                 services.AddSingleton<TeacherPage>();
                 services.AddSingleton<TeacherViewModel>();

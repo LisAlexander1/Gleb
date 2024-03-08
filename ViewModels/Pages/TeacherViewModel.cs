@@ -1,10 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.Messaging;
+using Gleb.Helpers;
 using Gleb.Models;
 using Gleb.Models.Messages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 using Wpf.Ui;
 using Wpf.Ui.Controls;
+using Wpf.Ui.Extensions;
 
 namespace Gleb.ViewModels.Pages;
 
@@ -12,6 +17,8 @@ public partial class TeacherViewModel : ObservableValidator, INavigationAware
 {
     private JournalDbContext JournalDbContext { get; }
     private INavigationService NavigationService { get; }
+    private IContentDialogService DialogService { get; }
+    
     private bool _isInitialized = false;
     
     public event EventHandler? FormSubmissionCompleted;
@@ -52,10 +59,11 @@ public partial class TeacherViewModel : ObservableValidator, INavigationAware
     [ObservableProperty]
     private bool _isEdit;
 
-    public TeacherViewModel(JournalDbContext journalDbContext, INavigationService navigationService)
+    public TeacherViewModel(JournalDbContext journalDbContext, INavigationService navigationService, IContentDialogService dialogService)
     {
         JournalDbContext = journalDbContext;
         NavigationService = navigationService;
+        DialogService = dialogService;
         WeakReferenceMessenger.Default.Register<TeacherMessage>(this, HandleMessage);
         FormSubmissionCompleted += HandleSubmissionCompleted;
     }
@@ -115,6 +123,17 @@ public partial class TeacherViewModel : ObservableValidator, INavigationAware
     [RelayCommand]
     private async void Delete()
     {
+        var result = await DialogService.ShowSimpleDialogAsync(new SimpleContentDialogCreateOptions()
+        {
+            Title = "Удаление",
+            CloseButtonText = "Отмена",
+            PrimaryButtonText = "Удалить",
+            Content = "Вы уверены что хотите удалить запись?"
+        });
+        if (result != ContentDialogResult.Primary)
+        {
+            return;
+        }
         var teacher = await JournalDbContext.Teachers.FirstOrDefaultAsync(t => t.Id == this.Id);
         if (teacher != null)
         {
@@ -157,7 +176,31 @@ public partial class TeacherViewModel : ObservableValidator, INavigationAware
             
         }
 
-        JournalDbContext.SaveChanges();
+        await JournalDbContext.SaveChangesAsync();
         Back();
+    }
+    
+    [RelayCommand]
+    public void OpenPicture()
+    {
+
+        OpenFileDialog openFileDialog =
+            new()
+            {
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
+                Filter = "Image files (*.bmp;*.jpg;*.jpeg;*.png)|*.bmp;*.jpg;*.jpeg;*.png|All files (*.*)|*.*"
+            };
+
+        if (openFileDialog.ShowDialog() != true)
+        {
+            return;
+        }
+
+        if (!File.Exists(openFileDialog.FileName))
+        {
+            return;
+        }
+
+        Photo = openFileDialog.OpenFile().ReadFully();
     }
 }

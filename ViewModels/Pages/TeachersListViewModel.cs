@@ -52,18 +52,18 @@ public partial class TeachersListViewModel : ObservableObject, INavigationAware
         Teachers = await DbContext.Teachers.ToListAsync();
         IsLoading = false;
     }
-
+    
     [RelayCommand]
-    private void Create()
+    private void Open(Teacher teacher)
     {
-        WeakReferenceMessenger.Default.Send<TeacherMessage>(new TeacherMessage(new Teacher(), true));
+        WeakReferenceMessenger.Default.Send(new TeacherMessage(teacher, false));
         NavigationService.NavigateWithHierarchy(typeof(TeacherPage));
     }
 
     [RelayCommand]
-    private void Edit(Teacher teacher)
+    private void Create()
     {
-        WeakReferenceMessenger.Default.Send<TeacherMessage>(new TeacherMessage(teacher, false));
+        WeakReferenceMessenger.Default.Send(new TeacherMessage(new Teacher(), true));
         NavigationService.NavigateWithHierarchy(typeof(TeacherPage));
     }
 }

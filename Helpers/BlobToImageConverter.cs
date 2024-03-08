@@ -15,25 +15,16 @@ public class BlobToImageConverter : IValueConverter
             return null;
         }
 
-        BitmapImage image = new BitmapImage();
-        image.BeginInit();
         try
         {
-            using var ms = new MemoryStream(blobData);
-            image.CacheOption = BitmapCacheOption.OnLoad;
-            image.StreamSource = ms;
-
+            return blobData.ToImage();
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
         }
-        finally
-        {
-            image.EndInit();
-        }
 
-        return image;
+        return null;
     }
         
     public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
