@@ -29,7 +29,7 @@ namespace Gleb.ViewModels.Pages
         private void InitializeViewModel()
         {
             CurrentTheme = ApplicationThemeManager.GetAppTheme();
-            AppVersion = $"UiDesktopApp1 - {GetAssemblyVersion()}";
+            AppVersion = $"Журнал - {GetAssemblyVersion()}";
 
             _isInitialized = true;
         }

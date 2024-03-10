@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using CommunityToolkit.Mvvm.Messaging;
+using Gleb.Helpers;
 using Gleb.Models;
 using Gleb.Models.Messages;
 using Gleb.Views.Pages;
@@ -34,7 +35,7 @@ public partial class ClassViewModel : ObservableValidator, INavigationAware
     private int _id = 0;
     
     [ObservableProperty]
-    private List<Student> _students;
+    private ObservableCollection<Student> _students;
     
     public event EventHandler? FormSubmissionCompleted;
     public event EventHandler? FormSubmissionFailed;
@@ -51,6 +52,7 @@ public partial class ClassViewModel : ObservableValidator, INavigationAware
     public void OnNavigatedTo()
     {
         InitializeViewModel();
+        RefreshStudents();
     }
 
     public void OnNavigatedFrom()
@@ -69,7 +71,7 @@ public partial class ClassViewModel : ObservableValidator, INavigationAware
         IsEdit = message.IsEdit;
         Id = message.Class.Id;
         Name = message.Class.Name;
-        Students = message.Class.Students;
+        Students = message.Class.Students!.ToObservableCollection();
     }
 
     [RelayCommand]
@@ -146,14 +148,14 @@ public partial class ClassViewModel : ObservableValidator, INavigationAware
     private void CreateStudent()
     {
         WeakReferenceMessenger.Default.Send(new StudentMessage(new Student(), true, Id));
-        NavigationService.NavigateWithHierarchy(typeof(ClassPage));
+        NavigationService.NavigateWithHierarchy(typeof(StudentPage));
     }
     
     [RelayCommand]
     private void OpenStudent(Student student)
     {
         WeakReferenceMessenger.Default.Send(new StudentMessage(student, false, Id));
-        NavigationService.NavigateWithHierarchy(typeof(ClassPage));
+        NavigationService.NavigateWithHierarchy(typeof(StudentPage));
     }
 
     [RelayCommand]
@@ -161,7 +163,8 @@ public partial class ClassViewModel : ObservableValidator, INavigationAware
     {
         IsLoading = true;
         await Task.Delay(1000);
-        await DbContext.Classes.ToListAsync();
+        var @class = await DbContext.Classes.Include(c => c.Students).FirstOrDefaultAsync(c => c.Id == Id);
+        Students = @class!.Students!.ToObservableCollection();
         IsLoading = false;
     }
 }

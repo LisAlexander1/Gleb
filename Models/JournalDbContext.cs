@@ -12,6 +12,7 @@ public class JournalDbContext : DbContext
     public DbSet<Teacher> Teachers { get; set; }
     public DbSet<SchoolSubject> SchoolSubjects { get; set; }
     public DbSet<Student> Students { get; set; }
+    public DbSet<Lesson> Lessons { get; set; }
     public DbSet<Class> Classes { get; set; }
     public DbSet<LessonResult> LessonResults { get; set; }
 }

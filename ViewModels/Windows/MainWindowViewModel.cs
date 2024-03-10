@@ -32,6 +32,12 @@ namespace Gleb.ViewModels.Windows
                 Content = "Классы",
                 Icon = new SymbolIcon { Symbol = SymbolRegular.PeopleCommunity24 },
                 TargetPageType = typeof(Views.Pages.ClassesListPage)
+            },
+            new NavigationViewItem()
+            {
+                Content = "Занятия",
+                Icon = new SymbolIcon { Symbol = SymbolRegular.Book24 },
+                TargetPageType = typeof(Views.Pages.LessonClassesListPage)
             }
         };
 
@@ -52,29 +58,38 @@ namespace Gleb.ViewModels.Windows
             new MenuItem { Header = "Home", Tag = "tray_home" }
         };
 
-        public MainWindowViewModel(TeacherViewModel teacherViewModel, ClassViewModel classViewModel)
+        public MainWindowViewModel(TeacherViewModel teacherViewModel, ClassViewModel classViewModel, StudentViewModel studentViewModel)
         {
             var lastNameBinding = new Binding("LastName") { Source = teacherViewModel, Mode = BindingMode.OneWay};
 
             var teacherMenuItem = new NavigationViewItem()
             {
-                Icon = new SymbolIcon { Symbol = SymbolRegular.PeopleAdd24 },
                 TargetPageType = typeof(Views.Pages.TeacherPage),
                 Visibility = Visibility.Collapsed
             };
             teacherMenuItem.SetBinding(ContentControl.ContentProperty, lastNameBinding);
             this.MenuItems.Add(teacherMenuItem);
             
+            
             var classNameBinding = new Binding("Name") { Source = classViewModel, Mode = BindingMode.OneWay};
 
             var classMenuItem = new NavigationViewItem()
             {
-                Icon = new SymbolIcon { Symbol = SymbolRegular.PeopleCommunity24 },
                 TargetPageType = typeof(Views.Pages.ClassPage),
                 Visibility = Visibility.Collapsed
             };
             classMenuItem.SetBinding(ContentControl.ContentProperty, classNameBinding);
             this.MenuItems.Add(classMenuItem);
+            
+            var studentBinding = new Binding("LastName") { Source = studentViewModel, Mode = BindingMode.OneWay};
+            
+            var studentMenuItem = new NavigationViewItem()
+            {
+                TargetPageType = typeof(Views.Pages.StudentPage),
+                Visibility = Visibility.Collapsed
+            };
+            studentMenuItem.SetBinding(ContentControl.ContentProperty, studentBinding);
+            this.MenuItems.Add(studentMenuItem);
         }
     }
 }

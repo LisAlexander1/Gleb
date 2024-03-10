@@ -4020,19 +4020,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\lis_a\\.nuget\\packages\\": {}
+    "C:\\Users\\lis\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "S:\\Code\\C#\\WindowMaker\\Gleb\\Gleb.csproj",
+      "projectUniqueName": "D:\\git\\1\\Gleb\\Gleb.csproj",
       "projectName": "Gleb",
-      "projectPath": "S:\\Code\\C#\\WindowMaker\\Gleb\\Gleb.csproj",
-      "packagesPath": "C:\\Users\\lis_a\\.nuget\\packages\\",
-      "outputPath": "S:\\Code\\C#\\WindowMaker\\Gleb\\obj\\",
+      "projectPath": "D:\\git\\1\\Gleb\\Gleb.csproj",
+      "packagesPath": "C:\\Users\\lis\\.nuget\\packages\\",
+      "outputPath": "D:\\git\\1\\Gleb\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\lis_a\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\lis\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

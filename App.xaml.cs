@@ -60,12 +60,6 @@ namespace Gleb
                 services.AddSingleton<INavigationWindow, MainWindow>();
                 services.AddSingleton<MainWindowViewModel>();
 
-                services.AddSingleton<DashboardPage>();
-                services.AddSingleton<DashboardViewModel>();
-                
-                services.AddSingleton<DataPage>();
-                services.AddSingleton<DataViewModel>();
-                
                 services.AddSingleton<SettingsPage>();
                 services.AddSingleton<SettingsViewModel>();
                 
@@ -80,6 +74,15 @@ namespace Gleb
                 
                 services.AddSingleton<TeacherPage>();
                 services.AddSingleton<TeacherViewModel>();
+                
+                services.AddSingleton<StudentPage>();
+                services.AddSingleton<StudentViewModel>();
+                
+                services.AddSingleton<LessonsListPage>();
+                services.AddSingleton<LessonsListViewModel>();
+                
+                services.AddSingleton<LessonClassesListPage>();
+                services.AddSingleton<LessonClassesListViewModel>();
             }).Build();
 
         /// <summary>
