@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\git\\1\\Gleb\\Gleb.csproj": {}
+    "S:\\Code\\C#\\Gleb\\Gleb.csproj": {}
   },
   "projects": {
-    "D:\\git\\1\\Gleb\\Gleb.csproj": {
+    "S:\\Code\\C#\\Gleb\\Gleb.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\git\\1\\Gleb\\Gleb.csproj",
+        "projectUniqueName": "S:\\Code\\C#\\Gleb\\Gleb.csproj",
         "projectName": "Gleb",
-        "projectPath": "D:\\git\\1\\Gleb\\Gleb.csproj",
-        "packagesPath": "C:\\Users\\lis\\.nuget\\packages\\",
-        "outputPath": "D:\\git\\1\\Gleb\\obj\\",
+        "projectPath": "S:\\Code\\C#\\Gleb\\Gleb.csproj",
+        "packagesPath": "C:\\Users\\lis_a\\.nuget\\packages\\",
+        "outputPath": "S:\\Code\\C#\\Gleb\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\lis\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\lis_a\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -38,11 +34,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -57,29 +48,25 @@
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.2, )"
+              "version": "[8.0.3, )"
             },
             "Microsoft.EntityFrameworkCore.Proxies": {
               "target": "Package",
-              "version": "[8.0.2, )"
+              "version": "[8.0.3, )"
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
-              "version": "[8.0.2, )"
+              "version": "[8.0.3, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.2, )"
+              "version": "[8.0.3, )"
             },
             "Microsoft.Extensions.Hosting": {
               "target": "Package",
               "version": "[8.0.0, )"
-            },
-            "System.Drawing.Common": {
-              "target": "Package",
-              "version": "[8.0.2, )"
             },
             "WPF-UI": {
               "target": "Package",
@@ -105,7 +92,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

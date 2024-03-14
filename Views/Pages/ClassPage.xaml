@@ -1,7 +1,6 @@
 ﻿<Page
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    ScrollViewer.CanContentScroll="False"
-    Title="ClassPage"
+    Title="{Binding ViewModel.Name, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
     d:DataContext="{d:DesignInstance local:ClassPage,
                                      IsDesignTimeCreatable=False}"
     d:DesignHeight="450"
@@ -20,12 +19,17 @@
     xmlns:userControls="clr-namespace:Gleb.Views.UserControls"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Page.Resources>
-        <helpers:BooleanToVisibilityHelper x:Key="BooleanToVisibilityHelper" />
         <helpers:BlobToImageConverter x:Key="BlobToImageConverter" />
-        <helpers:IntToVisibilityHelper x:Key="IntToVisibilityHelper" />
+        <helpers:IntToVisibilityConverter x:Key="IntToVisibilityHelper" />
+        <helpers:IntToBoolConverter x:Key="IntToBoolConverter" />
+        <helpers:MultiBoolToVisibilityConverter x:Key="MultiBoolToVisibilityConverter" />
     </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -42,18 +46,27 @@
             IsEnabled="{Binding ViewModel.IsEdit}"
             PlaceholderText="Название класса"
             Text="{Binding ViewModel.Name}" />
-        <ui:TextBlock
-            FontTypography="Subtitle"
-            Grid.Row="2"
-            Margin="0,12"
-            Text="Ученики"
-            Visibility="{Binding ViewModel.Id, Converter={StaticResource IntToVisibilityHelper}}" />
-        <ui:TextBlock
-            FontTypography="Subtitle"
-            Grid.Row="2"
-            Margin="0,12"
-            Text="Сохраните запись для редактирования учеников"
-            Visibility="{Binding ViewModel.Id, Converter={StaticResource IntToVisibilityHelper}, ConverterParameter={StaticResource BoolTrue}}" />
+        <!--  <ui:TextBlock  -->
+        <!--  FontTypography="Subtitle"  -->
+        <!--  Grid.Row="2"  -->
+        <!--  Margin="0,12"  -->
+        <!--  Text="Ученики"  -->
+        <!--  Visibility="{Binding ViewModel.Id, Converter={StaticResource IntToVisibilityHelper}}" />  -->
+        <ui:TextBlock Grid.Row="2">
+            <ui:TextBlock.Style>
+                <Style TargetType="ui:TextBlock">
+                    <Setter Property="Margin" Value="0,12" />
+                    <Setter Property="FontSize" Value="20" />
+                    <Setter Property="FontWeight" Value="SemiBold" />
+                    <Setter Property="Text" Value="Ученики" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=ViewModel.Id, Converter={StaticResource IntToBoolConverter}}" Value="False">
+                            <Setter Property="Text" Value="Сохраните запись для редактирования учеников" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ui:TextBlock.Style>
+        </ui:TextBlock>
         <userControls:ListPage
             AddCommand="{Binding ViewModel.CreateStudentCommand}"
             Grid.Row="3"
@@ -71,27 +84,36 @@
                             <Border
                                 CornerRadius="4,0,0,4"
                                 Height="60"
-                                Margin="0,0,8,0"
+                                Margin="0,0,10,0"
                                 Width="60">
                                 <Border.Background>
                                     <ImageBrush ImageSource="{Binding Photo, Converter={StaticResource BlobToImageConverter}}" Stretch="UniformToFill" />
                                 </Border.Background>
                             </Border>
-                            <StackPanel Margin="0,4,0,4">
-                                <TextBlock
-                                    FontSize="20"
-                                    Margin="0,0,0,4"
-                                    Text="{Binding LastName}"
-                                    VerticalAlignment="Stretch" />
+                            <StackPanel
+                                FlowDirection="RightToLeft"
+                                Margin="0,4,0,4"
+                                Orientation="Horizontal">
 
-                                <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}">
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}{0} {1}">
+                                <ui:TextBlock
+                                    FontTypography="BodyStrong"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center">
+                                    <ui:TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} {1} {2}">
+                                            <Binding Path="LastName" />
                                             <Binding Path="FirstName" />
                                             <Binding Path="Surname" />
                                         </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
+                                    </ui:TextBlock.Text>
+                                </ui:TextBlock>
+
+                                <Border
+                                    Margin="10,0,0,0"
+                                    Style="{StaticResource Tag}"
+                                    VerticalAlignment="Center">
+                                    <ui:TextBlock Text="{Binding AverageMark, StringFormat={}{0:F1}}" />
+                                </Border>
 
                             </StackPanel>
                         </StackPanel>
@@ -99,5 +121,48 @@
                 </DataTemplate>
             </userControls:ListPage.DataTemplate>
         </userControls:ListPage>
+
+        <ui:TextBlock
+            FontTypography="Subtitle"
+            Grid.Row="4"
+            Text="Предметы" />
+        <ListView
+            Grid.Row="5"
+            IsEnabled="{Binding ViewModel.IsEdit}"
+            ItemsSource="{Binding ViewModel.AvailableSubjects}"
+            SelectedItem="{Binding ViewModel.SelectedSubject}">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate DataType="{x:Type models:Subject}">
+                    <ToggleButton IsChecked="{Binding IsSelected, NotifyOnSourceUpdated=True, Mode=TwoWay}" Margin="0,0,0,0">
+                        <ui:TextBlock Text="{Binding Name}" />
+                        <ToggleButton.Visibility>
+                            <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                <Binding
+                                    Mode="TwoWay"
+                                    NotifyOnSourceUpdated="True"
+                                    Path="IsSelected" />
+                                <Binding Path="ViewModel.IsEdit" RelativeSource="{RelativeSource AncestorType=Page}" />
+                            </MultiBinding>
+                        </ToggleButton.Visibility>
+                    </ToggleButton>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <ui:TextBlock
+            FontTypography="Subtitle"
+            Grid.Row="6"
+            Margin="0,8"
+            Text="Учителя" />
+        <ItemsControl
+            Grid.Row="7"
+            ItemTemplate="{StaticResource TeacherListItem}"
+            ItemsSource="{Binding ViewModel.Teachers}"
+            Margin="0,0,0,16" />
     </Grid>
 </Page>

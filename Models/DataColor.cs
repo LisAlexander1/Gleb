@@ -5,10 +5,9 @@
 
 using System.Windows.Media;
 
-namespace Gleb.Models
+namespace Gleb.Models;
+
+public struct DataColor
 {
-    public struct DataColor
-    {
-        public Brush Color { get; set; }
-    }
+    public Brush Color { get; set; }
 }

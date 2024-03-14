@@ -12,6 +12,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ui:ThemesDictionary Theme="Light" />
                 <ui:ControlsDictionary />
+                <ResourceDictionary Source="Styles/UIComponents.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <system:Boolean x:Key="BoolTrue">True</system:Boolean>
             <system:Boolean x:Key="BoolFalse">False</system:Boolean>

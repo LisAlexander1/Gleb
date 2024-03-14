@@ -5,22 +5,16 @@ using Gleb.Views.Pages;
 using Microsoft.EntityFrameworkCore;
 using Wpf.Ui;
 using Wpf.Ui.Controls;
-using NavigationService = System.Windows.Navigation.NavigationService;
 
 namespace Gleb.ViewModels.Pages;
 
 public partial class ClassesListViewModel : ObservableObject, INavigationAware
 {
-    private bool _isInitialized = false;
+    [ObservableProperty] private List<Class> _classes;
 
-    [ObservableProperty]
-    private List<Class> _classes;
-    
-    [ObservableProperty]
-    private bool _isLoading; 
+    private bool _isInitialized;
 
-    private JournalDbContext DbContext { get; }
-    private INavigationService NavigationService { get; }
+    [ObservableProperty] private bool _isLoading;
 
     public ClassesListViewModel(JournalDbContext dbContext, INavigationService navigationService)
     {
@@ -28,11 +22,13 @@ public partial class ClassesListViewModel : ObservableObject, INavigationAware
         NavigationService = navigationService;
     }
 
+    private JournalDbContext DbContext { get; }
+    private INavigationService NavigationService { get; }
+
     public void OnNavigatedTo()
     {
         LoadData();
         InitializeViewModel();
-
     }
 
     public void OnNavigatedFrom()
@@ -42,20 +38,20 @@ public partial class ClassesListViewModel : ObservableObject, INavigationAware
     private void InitializeViewModel()
     {
         if (_isInitialized) return;
-        
-        
+
+
         _isInitialized = true;
     }
-    
+
     [RelayCommand]
     private async void LoadData()
     {
         IsLoading = true;
-        await Task.Delay(1000);
+        
         Classes = await DbContext.Classes.ToListAsync();
         IsLoading = false;
     }
-    
+
     [RelayCommand]
     private void Create()
     {

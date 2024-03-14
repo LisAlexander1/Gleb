@@ -4,8 +4,9 @@ namespace Gleb.Helpers;
 
 public static class ListExtensions
 {
-    public static ObservableCollection<T> ToObservableCollection<T>(this List<T> list)
+    public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T>? list)
     {
-        return new ObservableCollection<T>(list);
+        return list == null ? [] : new ObservableCollection<T>(list);
     }
+    
 }

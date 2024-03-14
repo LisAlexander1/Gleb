@@ -2,11 +2,7 @@
 
 namespace Gleb.Models.Messages;
 
-public class LessonMessage : ValueChangedMessage<Lesson>
+public class LessonMessage(Lesson value) : ValueChangedMessage<Lesson>(value)
 {
-    public Lesson Lesson { get; set; }
-    public LessonMessage(Lesson value) : base(value)
-    {
-        Lesson = value;
-    }
+    public Lesson Lesson { get; set; } = value;
 }

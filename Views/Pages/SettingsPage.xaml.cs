@@ -6,18 +6,17 @@
 using Gleb.ViewModels.Pages;
 using Wpf.Ui.Controls;
 
-namespace Gleb.Views.Pages
+namespace Gleb.Views.Pages;
+
+public partial class SettingsPage : INavigableView<SettingsViewModel>
 {
-    public partial class SettingsPage : INavigableView<SettingsViewModel>
+    public SettingsPage(SettingsViewModel viewModel)
     {
-        public SettingsViewModel ViewModel { get; }
+        ViewModel = viewModel;
+        DataContext = this;
 
-        public SettingsPage(SettingsViewModel viewModel)
-        {
-            ViewModel = viewModel;
-            DataContext = this;
-
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
+
+    public SettingsViewModel ViewModel { get; }
 }

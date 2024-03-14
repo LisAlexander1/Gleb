@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
+using Gleb.Helpers;
 using Gleb.Models;
 using Gleb.Models.Messages;
 using Gleb.Views.Pages;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.ObjectModel;
 using Wpf.Ui;
 using Wpf.Ui.Controls;
 
@@ -10,22 +12,22 @@ namespace Gleb.ViewModels.Pages;
 
 public partial class TeachersListViewModel : ObservableObject, INavigationAware
 {
-    private bool _isInitialized = false;
+    private bool _isInitialized;
 
     [ObservableProperty]
-    private List<Teacher> _teachers;
+    private bool _isLoading;
 
     [ObservableProperty]
-    private bool _isLoading; 
-
-    private JournalDbContext DbContext { get; }
-    private INavigationService NavigationService { get; }
+    private ObservableCollection<Teacher> _teachers;
 
     public TeachersListViewModel(JournalDbContext dbContext, INavigationService navigationService)
     {
         DbContext = dbContext;
         NavigationService = navigationService;
     }
+
+    private JournalDbContext DbContext { get; }
+    private INavigationService NavigationService { get; }
 
     public void OnNavigatedTo()
     {
@@ -40,19 +42,20 @@ public partial class TeachersListViewModel : ObservableObject, INavigationAware
     private void InitializeViewModel()
     {
         if (_isInitialized) return;
-        
+
         _isInitialized = true;
     }
-    
+
     [RelayCommand]
     private async void LoadData()
     {
         IsLoading = true;
-        await Task.Delay(1000);
-        Teachers = await DbContext.Teachers.ToListAsync();
+        
+        var teacherList = await DbContext.Teachers.ToListAsync();
+        Teachers = teacherList.ToObservableCollection();
         IsLoading = false;
     }
-    
+
     [RelayCommand]
     private void Open(Teacher teacher)
     {

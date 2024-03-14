@@ -1,7 +1,6 @@
 ﻿<Page
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    ScrollViewer.CanContentScroll="False"
-    Title="Что"
+    Title="{Binding ViewModel.LastName}"
     d:DataContext="{d:DesignInstance local:TeacherPage,
                                      IsDesignTimeCreatable=False}"
     d:DesignHeight="450"
@@ -15,18 +14,20 @@
     xmlns:helpers="clr-namespace:Gleb.Helpers"
     xmlns:local="clr-namespace:Gleb.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+    xmlns:models="clr-namespace:Gleb.Models"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:userControls="clr-namespace:Gleb.Views.UserControls"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Page.Resources>
-        <helpers:InverseBooleanConverter x:Key="InverseBooleanConverter" />
         <helpers:BlobToImageConverter x:Key="BlobToImageConverter" />
-        <helpers:BooleanToVisibilityHelper x:Key="BooleanToVisibilityHelper" />
+        <helpers:BooleanToVisibilityConverter x:Key="BooleanToVisibilityHelper" />
+        <helpers:MultiBoolToVisibilityConverter x:Key="MultiBoolToVisibilityConverter" />
 
     </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -109,7 +110,6 @@
                 IsEnabled="{Binding ViewModel.IsEdit}"
                 Name="BirthCalendarPicker"
                 SelectedDate="{Binding ViewModel.BirthDay}" />
-            <TextBlock Text="{Binding ViewModel.BirthDay}" />
         </StackPanel>
 
         <StackPanel
@@ -139,6 +139,37 @@
                     Width="100" />
             </StackPanel>
         </StackPanel>
+
+        <ui:TextBlock
+            FontTypography="BodyStrong"
+            Grid.Column="1"
+            Grid.Row="6"
+            Text="Предметы" />
+        <ListView
+            Grid.Column="1"
+            Grid.Row="8"
+            IsEnabled="{Binding ViewModel.IsEdit}"
+            ItemsSource="{Binding ViewModel.AvailableSubjects}"
+            SelectedItem="{Binding ViewModel.SelectedSubject}">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate DataType="{x:Type models:Subject}">
+                    <ToggleButton IsChecked="{Binding IsSelected, NotifyOnSourceUpdated=True, Mode=TwoWay}" Margin="0,0,0,0">
+                        <ui:TextBlock Text="{Binding Name}" />
+                        <ToggleButton.Visibility>
+                            <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                <Binding Path="IsSelected" />
+                                <Binding Path="ViewModel.IsEdit" RelativeSource="{RelativeSource AncestorType=Page}" />
+                            </MultiBinding>
+                        </ToggleButton.Visibility>
+                    </ToggleButton>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
         <userControls:EditPageButtons
             CancelCommand="{Binding ViewModel.BackCommand}"

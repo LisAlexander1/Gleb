@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Gleb")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a97f067b6c1a707ca8cadea515c33c770580b48f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+58a2521f6e3508382eb9019cc2686baced9d9260")]
 [assembly: System.Reflection.AssemblyProductAttribute("Gleb")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Gleb")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

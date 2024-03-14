@@ -1,6 +1,5 @@
 ﻿<Page
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    ScrollViewer.CanContentScroll="False"
     Title="Список учителей"
     d:DataContext="{d:DesignInstance local:TeachersListPage,
                                      IsDesignTimeCreatable=False}"
@@ -47,17 +46,37 @@
                             <TextBlock
                                 FontSize="20"
                                 Margin="0,0,0,4"
-                                Text="{Binding LastName}"
-                                VerticalAlignment="Stretch" />
-
-                            <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}">
+                                VerticalAlignment="Stretch">
                                 <TextBlock.Text>
-                                    <MultiBinding StringFormat="{}{0} {1}">
+                                    <MultiBinding StringFormat="{}{0} {1} {2}">
+                                        <Binding Path="LastName" />
                                         <Binding Path="FirstName" />
                                         <Binding Path="Surname" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
+
+                            <ItemsControl ItemsSource="{Binding Subjects}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type models:Subject}">
+                                        <Border
+                                            Background="{DynamicResource ControlFillColorTransparentBrush}"
+                                            BorderBrush="{DynamicResource TextFillColorTertiaryBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="4"
+                                            Margin="0,0,4,0"
+                                            Padding="3,1">
+                                            <ui:TextBlock Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="{Binding Name}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
 
                         </StackPanel>
                     </StackPanel>

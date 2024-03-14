@@ -7,80 +7,65 @@ using Gleb.Views.Pages;
 using Microsoft.EntityFrameworkCore;
 using Wpf.Ui;
 using Wpf.Ui.Controls;
-using NavigationService = System.Windows.Navigation.NavigationService;
 
 namespace Gleb.ViewModels.Pages;
 
 public partial class LessonsListViewModel : ObservableObject, INavigationAware
 {
-    private bool _isInitialized = false;
+    [ObservableProperty] private Class _class;
+    [ObservableProperty] private Subject _subject;
+    [ObservableProperty] private ObservableCollection<Lesson> _lessons;
 
-    [ObservableProperty]
-    private bool _isLoading;
+    private bool _isInitialized;
 
-    [ObservableProperty]
-    private Class _class;
-
-    [ObservableProperty]
-    private ObservableCollection<Lesson> _lessons;
-
-    private JournalDbContext DbContext { get; }
-    private INavigationService NavigationService { get; }
+    [ObservableProperty] private bool _isLoading;
 
     public LessonsListViewModel(JournalDbContext dbContext, INavigationService navigationService)
     {
         DbContext = dbContext;
         NavigationService = navigationService;
-        
-        WeakReferenceMessenger.Default.Register<LessonClassMessage>(this, HandleMessage);
 
+        WeakReferenceMessenger.Default.Register<LessonsListMessage>(this, HandleMessage);
     }
 
-    private void HandleMessage(object recipient, LessonClassMessage message)
-    {
-        this.Class = message.Class;
-        this.Lessons = message.Class.Lessons!.ToObservableCollection();
-    }
+    private JournalDbContext DbContext { get; }
+    private INavigationService NavigationService { get; }
 
     public void OnNavigatedTo()
     {
-        LoadData();
-        InitializeViewModel();
-
+        RefreshCommand.Execute(null);
     }
 
-    public void OnNavigatedFrom()
-    {
-    }
-
-    private void InitializeViewModel()
-    {
-        if (_isInitialized) return;
-        
-        
-        _isInitialized = true;
-    }
+    public void OnNavigatedFrom() {}
     
-    [RelayCommand]
-    private async void LoadData()
+
+    private void HandleMessage(object recipient, LessonsListMessage message)
     {
-        IsLoading = true;
-        await Task.Delay(1000);
-        Lessons = this.Class.Lessons!.ToObservableCollection();
-        IsLoading = false;
-    }
-    
-    [RelayCommand]
-    private void Create()
-    {
-        WeakReferenceMessenger.Default.Send(new LessonMessage(new Lesson()));
-        NavigationService.NavigateWithHierarchy(typeof(ClassPage));
+        Class = message.Class;
+        Subject = message.Subject;
+        Lessons = message.Class.ClassSubjects.SelectMany(cs => cs.Lessons).Where(l => l.SubjectId == Subject.Id).ToObservableCollection();
     }
 
     [RelayCommand]
     private void Edit(Lesson lesson)
     {
         WeakReferenceMessenger.Default.Send(new LessonMessage(lesson));
-        NavigationService.NavigateWithHierarchy(typeof(ClassPage));
+        NavigationService.NavigateWithHierarchy(typeof(LessonPage));
+    }
+    
+    [RelayCommand]
+    private async Task Refresh()
+    {
+        var l = await DbContext.Lessons.Where(l => l.ClassId == Class.Id && l.SubjectId == Subject.Id).ToListAsync();
+        Lessons = l.ToObservableCollection();
+    }
+    
+    [RelayCommand]
+    private void Create()
+    {
+        WeakReferenceMessenger.Default.Send(new LessonMessage(new Lesson()
+            { ClassSubject = new ClassSubject
+                { Class = Class, Subject = Subject}}) );
+        NavigationService.NavigateWithHierarchy(typeof(LessonPage));
     }
 }

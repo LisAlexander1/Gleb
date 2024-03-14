@@ -1,8 +1,7 @@
 ﻿<Page
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    ScrollViewer.CanContentScroll="False"
-    Title="Список занятий"
-    d:DataContext="{d:DesignInstance local:TeachersListPage,
+    Title="{Binding ViewModel.Subject.Name}"
+    d:DataContext="{d:DesignInstance local:LessonsListPage,
                                      IsDesignTimeCreatable=False}"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -14,10 +13,23 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Gleb.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:Gleb.Models"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:userControls="clr-namespace:Gleb.Views.UserControls"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Grid>
-        <userControls:ListPage />
+        <userControls:ListPage
+            AddCommand="{Binding ViewModel.CreateCommand}"
+            Items="{Binding ViewModel.Lessons}"
+            RefreshCommand="{Binding ViewModel.RefreshCommand}">
+            <userControls:ListPage.DataTemplate>
+                <DataTemplate DataType="{x:Type models:Lesson}">
+                    <ui:CardAction
+                        Command="{Binding ViewModel.EditCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                        CommandParameter="{Binding}"
+                        Content="{Binding Date, StringFormat='{}{0:dd-MM-yyyy}'}" />
+                </DataTemplate>
+            </userControls:ListPage.DataTemplate>
+        </userControls:ListPage>
     </Grid>
 </Page>

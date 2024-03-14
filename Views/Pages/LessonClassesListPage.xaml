@@ -1,6 +1,5 @@
 ﻿<Page
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    ScrollViewer.CanContentScroll="False"
     Title="Список учителей"
     d:DataContext="{d:DesignInstance local:LessonClassesListPage,
                                      IsDesignTimeCreatable=False}"
@@ -18,34 +17,22 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:userControls="clr-namespace:Gleb.Views.UserControls"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Page.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-    </Page.Resources>
-    <userControls:ListPage
-        AddCommand="{Binding ViewModel.CreateCommand}"
-        IsLoading="{Binding ViewModel.IsLoading}"
-        Items="{Binding ViewModel.Classes}"
-        RefreshCommand="{Binding ViewModel.LoadDataCommand}">
-        <userControls:ListPage.DataTemplate>
+    <Page.Resources />
+    <ListView ItemsSource="{Binding ViewModel.Classes}">
+        <ListView.ItemTemplate>
             <DataTemplate DataType="{x:Type models:Class}">
                 <ui:CardAction Command="{Binding ViewModel.EditCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding}">
                     <StackPanel Orientation="Horizontal">
                         <StackPanel Margin="0,0,0,4">
                             <TextBlock
                                 FontSize="20"
-                                Margin="0,0,0,4"
                                 Text="{Binding Name}"
-                                VerticalAlignment="Stretch" />
-
-                            <TextBlock
-                                FontSize="12"
-                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                Text="{Binding Students.Count, StringFormat={}Кол-во учеников: {0}}" />
+                                VerticalAlignment="Center" />
 
                         </StackPanel>
                     </StackPanel>
                 </ui:CardAction>
             </DataTemplate>
-        </userControls:ListPage.DataTemplate>
-    </userControls:ListPage>
+        </ListView.ItemTemplate>
+    </ListView>
 </Page>

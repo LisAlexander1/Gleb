@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
-using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.Messaging;
 using Gleb.Helpers;
 using Gleb.Models;
@@ -15,55 +15,35 @@ namespace Gleb.ViewModels.Pages;
 
 public partial class StudentViewModel : ObservableValidator, INavigationAware
 {
-    private JournalDbContext JournalDbContext { get; }
-    private INavigationService NavigationService { get; }
-    private IContentDialogService DialogService { get; }
-    
-    private bool _isInitialized = false;
-    
-    public event EventHandler? FormSubmissionCompleted;
-    public event EventHandler? FormSubmissionFailed;
+    [Required] [ObservableProperty] private DateTime? _birthDay;
 
-    
-    [ObservableProperty]
-    private int _id;
+    [Required] [ObservableProperty] private int _classId;
 
-    [Required]
-    [ObservableProperty] 
-    private string _firstName;
-    
-    [Required]
-    [ObservableProperty]
-    private string _lastName;
-    
-    [ObservableProperty] 
-    private string? _surname;
-    
-    [ObservableProperty] 
-    private byte[]? _photo;
+    [Required] [ObservableProperty] private string _firstName;
 
-    [Required]
-    [Range(1000,9999)]
-    [ObservableProperty]
-    private int _passportSerial;
-    
-    [Required]
-    [Range(100000,999999)]
-    [ObservableProperty]
+
+    [ObservableProperty] private int _id;
+
+    [ObservableProperty] private bool _isEdit;
+
+    private bool _isInitialized;
+
+    [Required] [ObservableProperty] private string _lastName;
+
+    [Required] [Range(100000, 999999)] [ObservableProperty]
     private int _passportNumber;
-    
-    [Required]
-    [ObservableProperty]
-    private DateTime? _birthDay;
 
-    [ObservableProperty]
-    private bool _isEdit;
+    [Required] [Range(1000, 9999)] [ObservableProperty]
+    private int _passportSerial;
 
-    [Required]
-    [ObservableProperty]
-    private int _classId;
+    [ObservableProperty] private byte[]? _photo;
 
-    public StudentViewModel(JournalDbContext journalDbContext, INavigationService navigationService, IContentDialogService dialogService)
+    [ObservableProperty] private string? _surname;
+
+    [ObservableProperty] private ObservableCollection<SubjectAverageMark> _marks;
+
+    public StudentViewModel(JournalDbContext journalDbContext, INavigationService navigationService,
+        IContentDialogService dialogService)
     {
         JournalDbContext = journalDbContext;
         NavigationService = navigationService;
@@ -72,19 +52,9 @@ public partial class StudentViewModel : ObservableValidator, INavigationAware
         FormSubmissionCompleted += HandleSubmissionCompleted;
     }
 
-    private void HandleMessage(object recipient, StudentMessage message)
-    {
-        IsEdit = message.IsEdit;
-        this.Id = message.Student.Id;
-        this.FirstName = message.Student.FirstName;
-        this.LastName = message.Student.LastName;
-        this.Surname = message.Student.Surname;
-        this.PassportSerial = message.Student.PassportSerial;
-        this.PassportNumber = message.Student.PassportNumber;
-        this.BirthDay = message.Student.BirthDay == DateTime.MinValue ? DateTime.Now : message.Student.BirthDay;
-        this.Photo = message.Student.Photo;
-        this.ClassId = message.ClassId;
-    }
+    private JournalDbContext JournalDbContext { get; }
+    private INavigationService NavigationService { get; }
+    private IContentDialogService DialogService { get; }
 
     public void OnNavigatedTo()
     {
@@ -93,9 +63,42 @@ public partial class StudentViewModel : ObservableValidator, INavigationAware
 
     public void OnNavigatedFrom()
     {
-        
     }
-    
+
+    public event EventHandler? FormSubmissionCompleted;
+    public event EventHandler? FormSubmissionFailed;
+
+    private void HandleMessage(object recipient, StudentMessage message)
+    {
+        IsEdit = message.IsEdit;
+        Id = message.Student.Id;
+        FirstName = message.Student.FirstName;
+        LastName = message.Student.LastName;
+        Surname = message.Student.Surname;
+        PassportSerial = message.Student.PassportSerial;
+        PassportNumber = message.Student.PassportNumber;
+        BirthDay = message.Student.BirthDay == DateTime.MinValue ? DateTime.Now : message.Student.BirthDay;
+        Photo = message.Student.Photo;
+        ClassId = message.Student.ClassId;
+
+        var classSubjects = message.Student.Class?.ClassSubjects.Select(cs => cs.Subject) ?? new List<Subject>();
+        Marks = classSubjects.Select(s =>
+        {
+            var results = s.ClassSubjects
+                .SelectMany(cs => cs.Lessons)
+                .Where(l => l.SubjectId == s.Id)
+                .SelectMany(l => l.LessonResults)
+                .Where(l => l.StudentId == Id).ToList();
+            
+            return results.Count != 0 ? new SubjectAverageMark
+                {
+                    Subject = s,
+                    Mark = results.Average(lr => lr.Mark) ?? 0,
+                    Attendance = results.Average(lr => !lr.IsSkipped ? 5 : 0)
+                } : new SubjectAverageMark { Subject = s };
+        }).ToObservableCollection();
+    }
+
     private void InitializeViewModel()
     {
         if (_isInitialized) return;
@@ -109,14 +112,9 @@ public partial class StudentViewModel : ObservableValidator, INavigationAware
         ValidateAllProperties();
 
         if (HasErrors)
-        {
             FormSubmissionFailed?.Invoke(this, EventArgs.Empty);
-        }
         else
-        {
             FormSubmissionCompleted?.Invoke(this, EventArgs.Empty);
-        }
-
     }
 
     [RelayCommand]
@@ -128,69 +126,53 @@ public partial class StudentViewModel : ObservableValidator, INavigationAware
     [RelayCommand]
     private async void Delete()
     {
-        var result = await DialogService.ShowSimpleDialogAsync(new SimpleContentDialogCreateOptions()
+        var result = await DialogService.ShowSimpleDialogAsync(new SimpleContentDialogCreateOptions
         {
             Title = "Удаление",
             CloseButtonText = "Отмена",
             PrimaryButtonText = "Удалить",
             Content = "Вы уверены что хотите удалить запись?"
         });
-        if (result != ContentDialogResult.Primary)
-        {
-            return;
-        }
+        if (result != ContentDialogResult.Primary) return;
         var student = await JournalDbContext.Students.FirstOrDefaultAsync(t => t.Id == this.Id);
         if (student != null)
         {
             JournalDbContext.Students.Remove(student);
             await JournalDbContext.SaveChangesAsync();
         }
+
         Back();
     }
 
     private async void HandleSubmissionCompleted(object? sender, EventArgs eventArgs)
     {
-        if (this.Id == 0)
-        {
-            await JournalDbContext.Students.AddAsync(new Student()
-            {
-                BirthDay = _birthDay!.Value,
-                FirstName = _firstName,
-                LastName = _lastName,
-                Surname = _surname,
-                PassportNumber = _passportNumber,
-                PassportSerial = _passportSerial,
-                Photo = _photo,
-                ClassId = _classId
-            });
-        }
+        var student = Id == 0
+            ? new Student()
+            : await JournalDbContext.Students.FirstOrDefaultAsync(t => t.Id == this.Id) ?? new Student();
+        
+        student.Id = Id;
+        student.BirthDay = BirthDay!.Value;
+        student.FirstName = FirstName;
+        student.LastName = LastName;
+        student.Surname = Surname;
+        student.PassportNumber = PassportNumber;
+        student.PassportSerial = PassportSerial;
+        student.Photo = Photo;
+        student.ClassId = ClassId;
+        
+        if (Id == 0)
+            await JournalDbContext.Students.AddAsync(student);
         else
-        {
-            var student = await JournalDbContext.Students.FirstOrDefaultAsync(t => t.Id == this.Id);
-            if (student != null)
-            {
-                student.Id = Id;
-                student.BirthDay = BirthDay!.Value;
-                student.FirstName = FirstName;
-                student.LastName = LastName;
-                student.Surname = Surname;
-                student.PassportNumber = PassportNumber;
-                student.PassportSerial = PassportSerial;
-                student.Photo = Photo;
-                student.ClassId = ClassId;
-                JournalDbContext.Students.Update(student);
-            }
-            
-        }
+            JournalDbContext.Students.Update(student);
 
         await JournalDbContext.SaveChangesAsync();
+        
         Back();
     }
-    
-    [RelayCommand]
-    public void OpenPicture()
-    {
 
+    [RelayCommand]
+    private void OpenPicture()
+    {
         OpenFileDialog openFileDialog =
             new()
             {
@@ -198,15 +180,9 @@ public partial class StudentViewModel : ObservableValidator, INavigationAware
                 Filter = "Image files (*.bmp;*.jpg;*.jpeg;*.png)|*.bmp;*.jpg;*.jpeg;*.png|All files (*.*)|*.*"
             };
 
-        if (openFileDialog.ShowDialog() != true)
-        {
-            return;
-        }
+        if (openFileDialog.ShowDialog() != true) return;
 
-        if (!File.Exists(openFileDialog.FileName))
-        {
-            return;
-        }
+        if (!File.Exists(openFileDialog.FileName)) return;
 
         Photo = openFileDialog.OpenFile().ReadFully();
     }

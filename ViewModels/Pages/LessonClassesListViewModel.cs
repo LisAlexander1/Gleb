@@ -5,22 +5,16 @@ using Gleb.Views.Pages;
 using Microsoft.EntityFrameworkCore;
 using Wpf.Ui;
 using Wpf.Ui.Controls;
-using NavigationService = System.Windows.Navigation.NavigationService;
 
 namespace Gleb.ViewModels.Pages;
 
 public partial class LessonClassesListViewModel : ObservableObject, INavigationAware
 {
-    private bool _isInitialized = false;
+    [ObservableProperty] private List<Class> _classes;
 
-    [ObservableProperty]
-    private List<Class> _classes;
-    
-    [ObservableProperty]
-    private bool _isLoading; 
+    private bool _isInitialized;
 
-    private JournalDbContext DbContext { get; }
-    private INavigationService NavigationService { get; }
+    [ObservableProperty] private bool _isLoading;
 
     public LessonClassesListViewModel(JournalDbContext dbContext, INavigationService navigationService)
     {
@@ -28,11 +22,13 @@ public partial class LessonClassesListViewModel : ObservableObject, INavigationA
         NavigationService = navigationService;
     }
 
+    private JournalDbContext DbContext { get; }
+    private INavigationService NavigationService { get; }
+
     public void OnNavigatedTo()
     {
         LoadData();
         InitializeViewModel();
-
     }
 
     public void OnNavigatedFrom()
@@ -42,31 +38,31 @@ public partial class LessonClassesListViewModel : ObservableObject, INavigationA
     private void InitializeViewModel()
     {
         if (_isInitialized) return;
-        
-        
+
+
         _isInitialized = true;
     }
-    
+
     [RelayCommand]
-    private async void LoadData()
+    private async Task LoadData()
     {
         IsLoading = true;
-        await Task.Delay(1000);
+        
         Classes = await DbContext.Classes.ToListAsync();
         IsLoading = false;
     }
-    
+
     [RelayCommand]
     private void Create()
     {
-        WeakReferenceMessenger.Default.Send(new ClassMessage(new Class(), true));
-        NavigationService.NavigateWithHierarchy(typeof(LessonsListPage));
+        WeakReferenceMessenger.Default.Send(new LessonClassSubjectMessage(new Class()));
+        NavigationService.NavigateWithHierarchy(typeof(LessonClassSubjectsListPage));
     }
 
     [RelayCommand]
     private void Edit(Class @class)
     {
-        WeakReferenceMessenger.Default.Send(new ClassMessage(@class, false));
-        NavigationService.NavigateWithHierarchy(typeof(LessonsListPage));
+        WeakReferenceMessenger.Default.Send(new LessonClassSubjectMessage(@class));
+        NavigationService.NavigateWithHierarchy(typeof(LessonClassSubjectsListPage));
     }
 }

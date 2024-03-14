@@ -3,12 +3,11 @@
 // Copyright (C) Leszek Pomianowski and WPF UI Contributors.
 // All Rights Reserved.
 
-namespace Gleb.Models
-{
-    public class AppConfig
-    {
-        public string ConfigurationsFolder { get; set; }
+namespace Gleb.Models;
 
-        public string AppPropertiesFileName { get; set; }
-    }
+public class AppConfig
+{
+    public string ConfigurationsFolder { get; set; }
+
+    public string AppPropertiesFileName { get; set; }
 }

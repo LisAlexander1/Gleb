@@ -3,9 +3,8 @@
 // Copyright (C) Leszek Pomianowski and WPF UI Contributors.
 // All Rights Reserved.
 
-namespace Gleb.Resources
+namespace Gleb.Resources;
+
+public class Translations
 {
-    public partial class Translations
-    {
-    }
 }

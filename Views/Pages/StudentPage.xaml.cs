@@ -1,5 +1,4 @@
-﻿using System.Windows.Controls;
-using Gleb.ViewModels.Pages;
+﻿using Gleb.ViewModels.Pages;
 using Wpf.Ui.Controls;
 
 namespace Gleb.Views.Pages;
@@ -10,7 +9,7 @@ public partial class StudentPage : INavigableView<StudentViewModel>
     {
         ViewModel = viewModel;
         DataContext = this;
-        
+
         InitializeComponent();
     }
 
